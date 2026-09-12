@@ -1,0 +1,28 @@
+name: Configure Monee Supabase
+on:
+  push:
+    branches: [main]
+permissions:
+  contents: write
+jobs:
+  configure:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure Supabase client
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('app.js')
+          s=p.read_text()
+          s=s.replace('YOUR_SUPABASE_PROJECT_URL','https://tdyobrprvphxycfvowpp.supabase.co')
+          s=s.replace('YOUR_SUPABASE_ANON_KEY','sb_publishable_DCxp0EkCpv3s_bs5RaGymw_Xe8MMDg2')
+          p.write_text(s)
+          PY
+      - name: Commit configuration
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add app.js
+          git diff --cached --quiet || git commit -m 'Configure Supabase cloud sync'
+          git push
