@@ -1,2 +1,3 @@
 # Monee
-Personal finance app
+
+Personal finance app with cloud synchronization powered by Supabase.
