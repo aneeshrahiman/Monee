@@ -4,8 +4,8 @@
    3) Replace SUPABASE_URL and SUPABASE_ANON_KEY below with your project's values.
    Never put a Supabase service_role key in this file.
 */
-const SUPABASE_URL = "YOUR_SUPABASE_PROJECT_URL";
-const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY";
+const SUPABASE_URL = "https://tdyobrprvphxycfvowpp.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_DCxp0EkCpv3s_bs5RaGymw_Xe8MMDg2";
 const CLOUD_CONFIGURED = !SUPABASE_URL.startsWith("YOUR_") && !SUPABASE_ANON_KEY.startsWith("YOUR_");
 const supabaseClient = CLOUD_CONFIGURED ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
 
