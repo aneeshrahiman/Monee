@@ -37,14 +37,21 @@ async function signInOrSignUp(event){event.preventDefault();const email=$("authE
 function setupAuth(){if(!CLOUD_CONFIGURED){showAuth(false);setSyncStatus("Local only");return;}$("authForm").onsubmit=signInOrSignUp;$("authToggle").onclick=()=>{const signup=$("authToggle").dataset.signup!=="true";$("authToggle").dataset.signup=signup?"true":"false";$("authSubmit").textContent=signup?"Create account":"Sign in";$("authToggle").textContent=signup?"Already have an account? Sign in":"Create an account";$("authMessage").textContent="";$("authPassword").setAttribute("autocomplete",signup?"new-password":"current-password");};$("signOutButton").onclick=async()=>{await supabaseClient.auth.signOut();state.user=null;showAuth(true);setSyncStatus("Signed out");};supabaseClient.auth.getSession().then(async({data})=>{if(data.session){state.user=data.session.user;showAuth(false);try{await loadCloudData();}catch(e){console.error(e);setSyncStatus("Cloud error");alert("Signed in, but cloud data could not be loaded: "+e.message);render();}}else showAuth(true);});}
 
 migrateDefaultExpenseCategories();
-$("monthPicker").textContent=monthLabel(state.selectedMonth);
+const originalMonthPicker=$("monthPicker");
+const nativeMonthPicker=document.createElement("input");
+nativeMonthPicker.id="monthPicker";
+nativeMonthPicker.type="month";
+nativeMonthPicker.className="month-button";
+nativeMonthPicker.setAttribute("aria-label","Select report month");
+nativeMonthPicker.value=state.selectedMonth;
+originalMonthPicker.replaceWith(nativeMonthPicker);
 $("date").value=today();
 categoryOptions();
 render();
 setupAuth();
 
 document.querySelectorAll("[data-period]").forEach(b=>b.onclick=()=>{state.period=b.dataset.period;document.querySelectorAll("[data-period]").forEach(x=>x.classList.toggle("active",x===b));render();});
-$("monthPicker").onclick=()=>{const selected=prompt("Choose a month (YYYY-MM)",state.selectedMonth);if(!selected||!/^\d{4}-(0[1-9]|1[0-2])$/.test(selected))return;state.selectedMonth=selected;state.period="month";document.querySelectorAll("[data-period]").forEach(x=>x.classList.toggle("active",x.dataset.period==="month"));$("monthPicker").textContent=monthLabel(selected);render();};
+$("monthPicker").onchange=()=>{const selected=$("monthPicker").value;if(!selected)return;state.selectedMonth=selected;state.period="month";document.querySelectorAll("[data-period]").forEach(x=>x.classList.toggle("active",x.dataset.period==="month"));render();};
 $("addButton").onclick=openNewTransaction;
 $("closeDialog").onclick=()=>$("transactionDialog").close();
 document.querySelectorAll(".type-choice").forEach(b=>b.onclick=()=>{state.type=b.dataset.type;document.querySelectorAll(".type-choice").forEach(x=>x.classList.toggle("active",x===b));categoryOptions();});
